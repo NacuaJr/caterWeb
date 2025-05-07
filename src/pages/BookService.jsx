@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
+import './BookService.css';
 
 export default function BookService() {
   const { serviceId } = useParams();
@@ -38,7 +39,6 @@ export default function BookService() {
   const handleBooking = async (e) => {
     e.preventDefault();
 
-    // Fetch customer ID from customers table
     const { data: customer } = await supabase
       .from('customers')
       .select('id')
@@ -61,14 +61,20 @@ export default function BookService() {
     navigate('/customer');
   };
 
-  if (!service) return <p>Loading service...</p>;
+  if (!service) return <p className="loading-text">Loading service...</p>;
 
   return (
-    <div>
-      <h2>Book: {service.title}</h2>
-      <form onSubmit={handleBooking}>
-        <div>
-          <label>Booking Date:</label><br />
+    <div className="book-container">
+      <h2 className="book-title">Book Service</h2>
+      <div className="service-details">
+        <h3>{service.title}</h3>
+        <p>{service.description}</p>
+        <p><strong>Price:</strong> ₱{service.price}</p>
+      </div>
+
+      <form className="booking-form" onSubmit={handleBooking}>
+        <div className="form-group">
+          <label>Booking Date:</label>
           <input
             type="datetime-local"
             name="booking_date"
@@ -78,16 +84,17 @@ export default function BookService() {
           />
         </div>
 
-        <div>
-          <label>Special Requests:</label><br />
+        <div className="form-group">
+          <label>Special Requests:</label>
           <textarea
             name="special_requests"
             value={form.special_requests}
             onChange={handleChange}
+            placeholder="Any preferences or requests..."
           />
         </div>
 
-        <button type="submit">Confirm Booking</button>
+        <button type="submit" className="primary-btn">Confirm Booking</button>
       </form>
     </div>
   );

@@ -1,9 +1,9 @@
-// CustomerDashboard.jsx
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { useNavigate } from 'react-router-dom';
 import { FIXED_CATEGORIES } from '../constants/categories';
+import { FiLogOut, FiCalendar, FiShoppingBag } from 'react-icons/fi';
+import './CustomerDashboard.css';
 
 export default function CustomerDashboard() {
   const [services, setServices] = useState([]);
@@ -31,64 +31,58 @@ export default function CustomerDashboard() {
   }));
 
   return (
-    <div style={{ padding: '30px' }}>
-      <h1 style={{ marginBottom: 10 }}>Customer Dashboard</h1>
-      <p style={{ marginBottom: 20 }}>Welcome, {user?.email}</p>
+    <div className="customer-dashboard">
+      <header className="dashboard-header">
+        <div className="welcome-section">
+          <h1>Foodie Dashboard</h1>
+          <p className="welcome-message">Welcome back, <span>{user?.email}</span></p>
+        </div>
+        
+        <div className="dashboard-actions">
+          <button className="action-btn bookings-btn" onClick={() => navigate('/customer-bookings')}>
+            <FiCalendar className="btn-icon" /> My Bookings
+          </button>
+          <button className="action-btn logout-btn" onClick={() => navigate('/')}>
+            <FiLogOut className="btn-icon" /> Logout
+          </button>
+        </div>
+      </header>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginBottom: 20 }}>
-        <button onClick={() => navigate('/customer-bookings')}>My Bookings</button>
-        <button onClick={() => navigate('/')}>Logout</button>
+      <div className="category-filters">
+        <h2 className="section-title">Explore Catering Services</h2>
+        <div className="category-grid">
+          {servicesByCategory.map(category => (
+            <div
+              key={category.name}
+              className={`category-card ${selectedCategory === category.name ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+            >
+              <h3>{category.name}</h3>
+              <p>{category.items.length} {category.items.length === 1 ? 'Service' : 'Services'}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Category Filters */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginBottom: 30 }}>
-        {servicesByCategory.map(category => (
-          <div
-            key={category.name}
-            style={{
-              border: selectedCategory === category.name ? '3px solid #007bff' : '2px solid #ccc',
-              padding: 20,
-              borderRadius: 10,
-              background: selectedCategory === category.name ? '#e6f0ff' : '#fff',
-              cursor: 'pointer',
-              width: '200px',
-              textAlign: 'center',
-              transition: 'all 0.2s ease'
-            }}
-            onClick={() =>
-              setSelectedCategory(selectedCategory === category.name ? null : category.name)
-            }
-          >
-            <h3>{category.name}</h3>
-            <p>{category.items.length} service{category.items.length !== 1 ? 's' : ''}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Services Display */}
       {selectedCategory && (
-        <div>
-          <h2 style={{ marginBottom: 10 }}>{selectedCategory} Services</h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+        <div className="services-section">
+          <h2 className="section-title">{selectedCategory} Services</h2>
+          <div className="services-grid">
             {services
               .filter(s => s.category?.toLowerCase() === selectedCategory.toLowerCase())
               .map(service => (
-                <div
-                  key={service.id}
-                  style={{
-                    border: '1px solid #ddd',
-                    padding: 20,
-                    borderRadius: 8,
-                    width: '300px',
-                    backgroundColor: '#f9f9f9'
-                  }}
-                >
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                  <p>
-                    <strong>Price:</strong> ₱{service.price}
-                  </p>
-                  <button onClick={() => navigate(`/book/${service.id}`)}>Book Now</button>
+                <div key={service.id} className="service-card">
+                  <div className="service-content">
+                    <h3>{service.title}</h3>
+                    <p className="service-description">{service.description}</p>
+                    <p className="service-price">₱{service.price}</p>
+                  </div>
+                  <button 
+                    className="book-now-btn"
+                    onClick={() => navigate(`/book/${service.id}`)}
+                  >
+                    <FiShoppingBag className="btn-icon" /> Book Now
+                  </button>
                 </div>
               ))}
           </div>

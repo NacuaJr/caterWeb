@@ -1,8 +1,9 @@
-// src/pages/SellerDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { FIXED_CATEGORIES } from '../constants/categories';
 import { useNavigate } from 'react-router-dom';
+import { FiPlus, FiEdit2, FiTrash2, FiLogOut, FiCalendar } from 'react-icons/fi';
+import './SellerDashboard.css';
 
 export default function SellerDashboard() {
   const [user, setUser] = useState(null);
@@ -21,14 +22,12 @@ export default function SellerDashboard() {
 
   const navigate = useNavigate();
 
-
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) alert(error.message);
     else window.location.href = '/'; // or navigate to your login page
   };
 
-  
   useEffect(() => {
     const fetchServices = async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -97,7 +96,7 @@ export default function SellerDashboard() {
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm('Delete this service?');
+    const confirm = window.confirm('Are you sure you want to delete this service?');
     if (!confirm) return;
 
     const { error } = await supabase
@@ -115,92 +114,129 @@ export default function SellerDashboard() {
   }));
 
   return (
-    
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Seller Dashboard</h1>
-        <button onClick={handleLogout}>Logout</button>
+    <div className="seller-dashboard">
+      <header className="dashboard-header">
+        <h1 className="dashboard-title">My Catering Business</h1>
+        <div className="dashboard-actions">
+          <button className="action-btn bookings-btn" onClick={() => navigate('/seller-bookings')}>
+            <FiCalendar className="btn-icon" /> Bookings
+          </button>
+          <button className="action-btn logout-btn" onClick={handleLogout}>
+            <FiLogOut className="btn-icon" /> Logout
+          </button>
+        </div>
+      </header>
+
+      <div className="dashboard-controls">
+        <button className="primary-btn" onClick={() => { resetForm(); setShowModal(true); }}>
+          <FiPlus className="btn-icon" /> Add New Service
+        </button>
       </div>
 
-      <button onClick={() => { resetForm(); setShowModal(true); }}>
-        + Add Service
-      </button>
-      <button onClick={() => navigate('/seller-bookings')} style={{ marginRight: 10 }}>
-      Manage Bookings
-      </button>
-
-      {/* Category Cards */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginTop: 30 }}>
+      <div className="category-grid">
         {servicesByCategory.map(category => (
           <div
             key={category.name}
-            style={{
-              border: '2px solid #000',
-              padding: 20,
-              borderRadius: 10,
-              background: '#fff',
-              cursor: 'pointer',
-              width: '200px',
-              textAlign: 'center'
-            }}
+            className={`category-card ${selectedCategory === category.name ? 'active' : ''}`}
             onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
           >
-            <h3>{category.name}</h3>
-            <p>{category.items.length} services</p>
+            <h3 className="category-name">{category.name}</h3>
+            <p className="service-count">{category.items.length} {category.items.length === 1 ? 'Service' : 'Services'}</p>
           </div>
         ))}
       </div>
 
-      {/* Services Under Selected Category */}
       {selectedCategory && (
-        <div style={{ marginTop: 30 }}>
-          <h2>{selectedCategory} Services</h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+        <div className="services-section">
+          <h2 className="section-title">{selectedCategory} Services</h2>
+          <div className="services-grid">
             {services
               .filter(s => s.category === selectedCategory)
               .map(service => (
-                <div key={service.id} style={{
-                  border: '1px solid #ccc',
-                  padding: 20,
-                  borderRadius: 8,
-                  width: '300px',
-                  background: '#fafafa'
-                }}>
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                  <p>Price: ₱{service.price}</p>
-                  <button onClick={() => handleEdit(service)}>Update</button>
-                  <button onClick={() => handleDelete(service.id)} style={{ marginLeft: 10 }}>Delete</button>
+                <div key={service.id} className="service-card">
+                  <div className="service-content">
+                    <h3 className="service-title">{service.title}</h3>
+                    <p className="service-description">{service.description}</p>
+                    <p className="service-price">₱{parseFloat(service.price).toFixed(2)}</p>
+                  </div>
+                  <div className="service-actions">
+                    <button className="edit-btn" onClick={() => handleEdit(service)}>
+                      <FiEdit2 /> Edit
+                    </button>
+                    <button className="delete-btn" onClick={() => handleDelete(service.id)}>
+                      <FiTrash2 /> Delete
+                    </button>
+                  </div>
                 </div>
               ))}
           </div>
         </div>
       )}
 
-      {/* Modal */}
       {showModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0,
-          width: '100%', height: '100%',
-          background: 'rgba(0,0,0,0.5)',
-          display: 'flex', justifyContent: 'center', alignItems: 'center'
-        }}>
-          <div style={{
-            background: '#fff', padding: 30, borderRadius: 10,
-            width: '400px'
-          }}>
-            <h2>{editMode ? 'Edit Service' : 'New Service'}</h2>
-            <form onSubmit={handleSubmit}>
-              <input name="title" value={form.title} onChange={handleChange} placeholder="Title" required /><br />
-              <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" required /><br />
-              <input name="price" value={form.price} onChange={handleChange} placeholder="Price" type="number" step="0.01" required /><br />
-              <select name="category" value={form.category} onChange={handleChange}>
-                {FIXED_CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select><br />
-              <button type="submit">{editMode ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={() => { setShowModal(false); resetForm(); }} style={{ marginLeft: 10 }}>Cancel</button>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2 className="modal-title">{editMode ? 'Edit Service' : 'Create New Service'}</h2>
+            <form onSubmit={handleSubmit} className="service-form">
+              <div className="form-group">
+                <label>Service Title</label>
+                <input
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                  placeholder="e.g., Premium Wedding Package"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  placeholder="Describe your service..."
+                  required
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Price (₱)</label>
+                  <input
+                    name="price"
+                    value={form.price}
+                    onChange={handleChange}
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Category</label>
+                  <select
+                    name="category"
+                    value={form.category}
+                    onChange={handleChange}
+                  >
+                    {FIXED_CATEGORIES.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              <div className="form-actions">
+                <button type="button" className="cancel-btn" onClick={() => { setShowModal(false); resetForm(); }}>
+                  Cancel
+                </button>
+                <button type="submit" className="submit-btn">
+                  {editMode ? 'Update Service' : 'Create Service'}
+                </button>
+              </div>
             </form>
           </div>
         </div>

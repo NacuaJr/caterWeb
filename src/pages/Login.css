@@ -1,0 +1,152 @@
+/* src/pages/Login.css */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+    background-size: cover;
+    padding: 20px;
+  }
+  
+  .login-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .login-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e67e22;
+    margin-bottom: 8px;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .login-subtitle {
+    font-size: 16px;
+    color: #7f8c8d;
+    margin-bottom: 32px;
+    text-align: center;
+    font-style: italic;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .input-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e67e22;
+  }
+  
+  .login-input {
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid #f1c40f;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .login-input:focus {
+    border-color: #e67e22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3);
+  }
+  
+  .login-input::placeholder {
+    color: #bdc3c7;
+  }
+  
+  .primary-button {
+    background-color: #e67e22;
+    color: white;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .primary-button:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+  }
+  
+  .secondary-button {
+    background-color: white;
+    color: #e67e22;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #f1c40f;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+  }
+  
+  .secondary-button:hover {
+    background-color: #f1c40f;
+    color: white;
+    border-color: #e67e22;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    color: #e67e22;
+  }
+  
+  .divider::before,
+  .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #f1c40f;
+  }
+  
+  .divider-text {
+    padding: 0 10px;
+    color: #e67e22;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+  }
+  
+  /* Food icon decorations */
+  .food-icon {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: #e67e22;
+  }

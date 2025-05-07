@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabase';
 import { useNavigate } from 'react-router-dom';
+import './SellerRegister.css';
 
 export default function SellerRegister() {
   const [form, setForm] = useState({
@@ -35,7 +36,6 @@ export default function SellerRegister() {
     const { error: insertUserError } = await supabase.from('users').insert({
       id: userId,
       email,
-      password,
       role: 'seller'
     });
 
@@ -56,35 +56,77 @@ export default function SellerRegister() {
   };
 
   return (
-    <>
-    <form onSubmit={handleSubmit}>
-      <h2>Seller Registration</h2>
-      <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-      <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-      <input type="text" name="business_name" placeholder="Business Name" onChange={handleChange} required />
-      <input type="text" name="location" placeholder="Location" onChange={handleChange} required />
-      <input type="text" name="contact_number" placeholder="Contact Number" onChange={handleChange} required />
-      <textarea name="bio" placeholder="Bio" onChange={handleChange}></textarea>
-      <button type="submit">Register as Seller</button>
-    </form>
+    <div className="food-register-container">
+      <form onSubmit={handleSubmit} className="food-register-form">
+        <h2 className="food-register-title">Register Your Food Business</h2>
+        
+        <input
+          type="email"
+          name="email"
+          placeholder="Business Email"
+          onChange={handleChange}
+          required
+          className="food-input"
+        />
+        
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+          className="food-input"
+        />
+        
+        <input
+          type="text"
+          name="business_name"
+          placeholder="Business Name"
+          onChange={handleChange}
+          required
+          className="food-input"
+        />
+        
+        <input
+          type="text"
+          name="location"
+          placeholder="Business Location"
+          onChange={handleChange}
+          required
+          className="food-input"
+        />
+        
+        <input
+          type="text"
+          name="contact_number"
+          placeholder="Contact Number"
+          onChange={handleChange}
+          required
+          className="food-input"
+        />
+        
+        <textarea
+          name="bio"
+          placeholder="Tell us about your food business..."
+          onChange={handleChange}
+          className="food-textarea"
+        ></textarea>
 
-        <p style={{ marginTop: '1rem' }}>
-            Already have an account?{' '}
-            <button
-                onClick={() => window.location.href = '/'}
-                style={{
-                background: 'none',
-                border: 'none',
-                color: '#007BFF',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                padding: 0
-                }}
-            >
-                Login instead
-            </button>
-            </p>
+        <button type="submit" className="food-register-button">
+          Register Business
+        </button>
 
-    </>
+        <p className="food-login-prompt">
+          Already have an account?{' '}
+          <button 
+            type="button"
+            onClick={() => window.location.href = '/'}
+            className="food-login-link"
+          >
+            Sign In Here
+          </button>
+        </p>
+      </form>
+    </div>
   );
 }
