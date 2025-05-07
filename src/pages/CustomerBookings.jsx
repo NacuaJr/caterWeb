@@ -1,6 +1,8 @@
+// src/pages/CustomerBookingHistory.jsx
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { useNavigate } from 'react-router-dom';
+import './CustomerBookings.css';
 
 export default function CustomerBookingHistory() {
   const [bookings, setBookings] = useState([]);
@@ -46,18 +48,19 @@ export default function CustomerBookingHistory() {
   };
 
   return (
-    <div style={{ padding: 30 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="booking-container">
+      <div className="booking-header">
         <h1>Your Booking History</h1>
-        <button onClick={() => navigate('/customer')}>Go Back</button>
+        <button className="back-btn" onClick={() => navigate('/customer')}>
+          Go Back
+        </button>
       </div>
 
-      <div style={{ marginTop: 20 }}>
-        <label>Status Filter: </label>
+      <div className="filter-section">
+        <label>Status Filter:</label>
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
-          style={{ marginLeft: 10 }}
         >
           <option value="all">All</option>
           <option value="pending">Pending</option>
@@ -66,30 +69,30 @@ export default function CustomerBookingHistory() {
         </select>
       </div>
 
-      <div style={{ display: 'grid', gap: 20, marginTop: 20 }}>
-        {bookings.map(b => (
-          <div
-            key={b.id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: 10,
-              padding: 20,
-              background: '#f9f9f9',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
-            }}
-          >
-            <p><strong>Service:</strong> {b.catering_services?.title}</p>
-            <p><strong>Date:</strong> {new Date(b.booking_date).toLocaleString()}</p>
-            <p><strong>Status:</strong> {b.status}</p>
-            {b.special_requests && <p><strong>Requests:</strong> {b.special_requests}</p>}
+      <div className="booking-list">
+        {bookings.length === 0 ? (
+          <p className="no-bookings">No bookings found.</p>
+        ) : (
+          bookings.map(b => (
+            <div key={b.id} className="booking-card">
+              <p><strong>Service:</strong> {b.catering_services?.title}</p>
+              <p><strong>Date:</strong> {new Date(b.booking_date).toLocaleString()}</p>
+              <p>
+                <strong>Status:</strong>{' '}
+                <span className={`status ${b.status}`}>{b.status}</span>
+              </p>
+              {b.special_requests && (
+                <p><strong>Requests:</strong> {b.special_requests}</p>
+              )}
 
-            {b.status === 'pending' && (
-              <button onClick={() => cancelBooking(b.id)} style={{ marginTop: 10 }}>
-                Cancel Booking
-              </button>
-            )}
-          </div>
-        ))}
+              {b.status === 'pending' && (
+                <button className="cancel-btn" onClick={() => cancelBooking(b.id)}>
+                  Cancel Booking
+                </button>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
