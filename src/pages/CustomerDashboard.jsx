@@ -40,7 +40,7 @@ export default function CustomerDashboard() {
         
         <div className="dashboard-actions">
           <button className="action-btn bookings-btn" onClick={() => navigate('/customer-bookings')}>
-            <FiCalendar className="btn-icon" /> My Bookings
+            <FiCalendar className="btn-icon" /> Notifications !
           </button>
           <button className="action-btn logout-btn" onClick={() => navigate('/')}>
             <FiLogOut className="btn-icon" /> Logout

@@ -129,7 +129,7 @@ export default function SellerDashboard() {
 
       <div className="dashboard-controls">
         <button className="primary-btn" onClick={() => { resetForm(); setShowModal(true); }}>
-          <FiPlus className="btn-icon" /> Add New Service
+          <FiPlus className="btn-icon" /> Add New Service/Menu        
         </button>
       </div>
 

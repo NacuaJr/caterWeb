@@ -50,7 +50,7 @@ export default function CustomerBookingHistory() {
   return (
     <div className="booking-container">
       <div className="booking-header">
-        <h1>Your Booking History</h1>
+        <h1>Your Booking Notification</h1>
         <button className="back-btn" onClick={() => navigate('/customer')}>
           Go Back
         </button>
