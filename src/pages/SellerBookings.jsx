@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { useNavigate } from 'react-router-dom';
-import './SellerBookings.css'; // Import CSS
+import './SellerBookings.css';
 
 export default function SellerBookings() {
   const [bookings, setBookings] = useState([]);
@@ -17,7 +17,11 @@ export default function SellerBookings() {
 
       let query = supabase
         .from('bookings')
-        .select(`*, catering_services(title), customers(full_name)`)
+        .select(`
+          *,
+          catering_services (title),
+          customers (full_name)
+        `)
         .eq('seller_id', sellerId);
 
       if (statusFilter !== 'all') {
@@ -63,28 +67,58 @@ export default function SellerBookings() {
         </select>
       </div>
 
-      <div className="bookings-grid">
-        {bookings.map(b => (
-          <div key={b.id} className="booking-card">
-            <p><strong>Service:</strong> {b.catering_services?.title}</p>
-            <p><strong>Customer:</strong> {b.customers?.full_name}</p>
-            <p>
-              <strong>Status:</strong> 
-              <span className={`status-badge ${b.status}`}>{b.status}</span>
-            </p>
-            <p><strong>Date:</strong> {new Date(b.booking_date).toLocaleString()}</p>
-            {b.special_requests && (
-              <p><strong>Requests:</strong> {b.special_requests}</p>
+      <div className="bookings-table-wrapper">
+        <table className="bookings-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Request</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="no-bookings">No bookings found.</td>
+              </tr>
+            ) : (
+              bookings.map(b => (
+                <tr key={b.id}>
+                  <td>{b.catering_services?.title || 'N/A'}</td>
+                  <td>{b.customers?.full_name || 'N/A'}</td>
+                  <td>{new Date(b.booking_date).toLocaleString()}</td>
+                  <td>
+                    <span className={`status-badge ${b.status}`}>{b.status}</span>
+                  </td>
+                  <td>{b.special_requests || '-'}</td>
+                  <td>
+                    {b.status === 'pending' && (
+                      <div className="action-buttons">
+                        <button className="confirm-btn" onClick={() => updateStatus(b.id, 'confirmed')}>
+                          Confirm
+                        </button>
+                        <button className="cancel-btn" onClick={() => updateStatus(b.id, 'cancelled')}>
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                    {b.status === 'confirmed' && (
+                      <button className="complete-btn" onClick={() => updateStatus(b.id, 'completed')}>
+                        Complete
+                      </button>
+                    )}
+                    {(b.status === 'completed' || b.status === 'cancelled') && (
+                      <span className="no-action">-</span>
+                    )}
+                  </td>
+                </tr>
+              ))
             )}
-
-            {b.status === 'pending' && (
-              <div className="action-buttons">
-                <button className="confirm-btn" onClick={() => updateStatus(b.id, 'confirmed')}>Confirm</button>
-                <button className="cancel-btn" onClick={() => updateStatus(b.id, 'cancelled')}>Cancel</button>
-              </div>
-            )}
-          </div>
-        ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
